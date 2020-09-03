@@ -44,7 +44,41 @@ app.post("/api/tutorial", async (req, res) => {
     }
   });
 
+  app.put('/api/tutorial/:id', async (req,res)=>{
+    const { name = undefined, published = false } = req.body;
+    const tutorial = {
+        name: name,
+        published: published
+      };
+      try{
+        const update = await Tutorial.findByIdAndUpdate(req.params.id,tutorial,  { new: true });
+        res.json(update)
+      }
+    catch(err){
+     console.log("error",err)
+    }
+
+  })
+
+  app.delete('/api/toturial/:id', (req, res) => {
+    Tutorial.findByIdAndRemove(req.params.id)
+      .then(removeTutorial => {
+        res.status(204).send(`${removeTutorial} removed`)
+      })
+      .catch(error => console.log(error))
+  })
+
+  app.delete('/api/tutorials',(req,res)=>{
+      Tutorial.deleteMany({})
+      .then(removeTutorial => {
+          res.status(204).send('deleted all')
+      })
+      .catch(error => console.log(error))
+  })
+
   const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`);
 })
+
+
